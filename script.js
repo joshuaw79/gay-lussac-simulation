@@ -1,38 +1,76 @@
-// Constants
-const P0 = 101.3;  // reference pressure in kPa
-const T0 = 300;    // reference temperature in K
-const k = P0 / T0; // constant for Gay-Lussac's law
+const canvas = document.getElementById("simulationCanvas");
+const ctx = canvas.getContext("2d");
 
-// DOM Elements
-const tempSlider = document.getElementById('tempSlider');
-const tempValue = document.getElementById('tempValue');
-const pressureValue = document.getElementById('pressureValue');
-const canvas = document.getElementById('containerCanvas');
-const ctx = canvas.getContext('2d');
+canvas.width = 600;
+canvas.height = 400;
 
-// Update function
-function updateSimulation() {
-    const T = parseFloat(tempSlider.value);
-    const P = k * T;
+const tempSlider = document.getElementById("temperature");
+const tempDisplay = document.getElementById("tempDisplay");
 
-    tempValue.textContent = T.toFixed(0);
-    pressureValue.textContent = P.toFixed(2);
+// Particle setup
+const NUM_PARTICLES = 50;
+let particles = [];
 
-    drawContainer(P);
+class Particle {
+    constructor() {
+        this.radius = 5;
+        this.x = Math.random() * (canvas.width - 2 * this.radius) + this.radius;
+        this.y = Math.random() * (canvas.height - 2 * this.radius) + this.radius;
+        this.speed = 1; // will scale with temperature
+        this.angle = Math.random() * 2 * Math.PI;
+    }
+
+    update() {
+        this.x += this.speed * Math.cos(this.angle);
+        this.y += this.speed * Math.sin(this.angle);
+
+        // Bounce off walls
+        if (this.x - this.radius < 0 || this.x + this.radius > canvas.width) {
+            this.angle = Math.PI - this.angle;
+        }
+        if (this.y - this.radius < 0 || this.y + this.radius > canvas.height) {
+            this.angle = -this.angle;
+        }
+    }
+
+    draw() {
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.radius, 0, 2 * Math.PI);
+        ctx.fillStyle = "dodgerblue";
+        ctx.fill();
+        ctx.strokeStyle = "black";
+        ctx.stroke();
+    }
 }
 
-// Simple visual container
-function drawContainer(pressure) {
+// Initialize particles
+for (let i = 0; i < NUM_PARTICLES; i++) {
+    particles.push(new Particle());
+}
+
+// Map temperature to particle speed
+function updateParticleSpeed() {
+    const temp = parseInt(tempSlider.value);
+    tempDisplay.textContent = `${temp} K`;
+    const baseSpeed = temp / 300; // arbitrary scaling, 300K ~ speed 1
+    particles.forEach(p => p.speed = baseSpeed);
+}
+
+// Animation loop
+function animate() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    const particleHeight = Math.min(canvas.height, pressure);
-    ctx.fillStyle = 'skyblue';
-    ctx.fillRect(50, canvas.height - particleHeight, 300, particleHeight);
-    ctx.strokeStyle = 'black';
-    ctx.strokeRect(50, 0, 300, canvas.height);
+
+    particles.forEach(p => {
+        p.update();
+        p.draw();
+    });
+
+    requestAnimationFrame(animate);
 }
 
-// Initial draw
-updateSimulation();
+// Event listener
+tempSlider.addEventListener("input", updateParticleSpeed);
 
-// Listen to slider changes
-tempSlider.addEventListener('input', updateSimulation);
+// Start
+updateParticleSpeed();
+animate();
