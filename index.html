@@ -1,21 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Gay-Lussac Simulation</title>
-    <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gay-Lussac Simulation</title>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
+<h1>Gay-Lussac Simulation</h1>
 
-    <h1>Gay-Lussac Pressure Simulation</h1>
+<label for="temperature">Temperature (K): </label>
+<input type="range" id="temperature" min="100" max="1000" value="300">
+<span id="tempDisplay">300 K</span>
 
-    <label for="tempSlider">Temperature (K): <span id="tempValue">300</span></label>
-    <input type="range" id="tempSlider" min="200" max="500" value="300">
+<canvas id="simulationCanvas"></canvas>
 
-    <p>Pressure: <span id="pressureValue">101.3</span> kPa</p>
-
-    <canvas id="containerCanvas" width="400" height="200"></canvas>
-
-    <script src="script.js"></script>
+<script src="script.js"></script>
 </body>
 </html>
