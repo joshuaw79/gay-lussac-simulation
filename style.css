@@ -1,9 +1,14 @@
 body {
     font-family: Arial, sans-serif;
     text-align: center;
-    margin: 50px;
+    margin: 0;
+    padding: 0;
+    background-color: #f0f0f0;
 }
 
-input[type=range] {
-    width: 50%;
+canvas {
+    background-color: #ffffff;
+    border: 2px solid #333;
+    display: block;
+    margin: 20px auto;
 }
